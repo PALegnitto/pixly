@@ -14,6 +14,23 @@ client = boto3.client(
     aws_access_key_id=AWS_ACCESS_KEY,
     aws_secret_access_key=AWS_SECRET_KEY,
 )
+""" Code for uploading a file
+
+    bucket = 'your-bucket-name'
+    file_name = 'location-of-your-file'
+    key_name = 'name-of-file-in-s3'
+    client.upload_file(file_name, bucket, key_name)
+    
+    https://boto3.amazonaws.com/v1/documentation/api/latest/guide/s3-uploading-files.html
+"""
+
+""" Pillow Module ExifTags
+    https://pillow.readthedocs.io/en/stable/reference/ExifTags.html#module-PIL.ExifTags
+    Generates plaintext strings from hex EXIF tags
+    
+    Image.getexif()
+    to get EXIF data
+"""
 
 @app.get("/")
 def homepage():
