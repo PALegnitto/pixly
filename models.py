@@ -26,3 +26,14 @@ class Image(db.Model):
                     nullable = False)
     photo_url = db.Column(db.Text,
                     nullable = False)
+
+class ExifData(db.Model):
+
+    __tablename__ = "exifdata"
+
+    tag = db.Column(db.Text,
+                    primary_key = True)
+    photo_id = db.Column(db.Integer,
+                    foreign_key = True)
+    value = db.Column(db.Text,
+                    nullable = False)
