@@ -22,8 +22,7 @@ class Image(db.Model):
                     primary_key = True,
                     autoincrement = True)
     version = db.Column(db.Integer,
-                    nullable = False,
-                    autoincrement = True)
+                    primary_key = True,
+                    nullable = False)
     photo_url = db.Column(db.Text,
-                    nullable = False,
-                    default = '')
+                    nullable = False)
