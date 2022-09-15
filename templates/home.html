@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %} Upload Image {% endblock %}
+
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+<div class=flash>{{ message }}</div>
+{% endfor %}
+
+<h1>Image Upload</h1>
+
+<a href="/upload">Upload an image</a>
+
+{% endblock %}

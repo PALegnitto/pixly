@@ -1,11 +1,12 @@
 import os
-from flask import Flask, request, render_template, jsonify, session, redirect
+from flask import Flask, request, render_template, jsonify, session, redirect,flash
 from werkzeug.utils import secure_filename
 from PIL import Image
 import boto3
 import botocore
 from models import db, connect_db
 from models import Image as ImageTable
+from uuid import uuid4 as uuid
 
 #TODO: Make template HTML for Home, Upload, Image Gallery
 #TODO: Organize code nicely
@@ -36,28 +37,26 @@ s3 = boto3.client(
 @app.get("/")
 def homepage():
     """Show homepage."""
-    return """
-    <!doctype html>
-    <title>Home</title>
-    <h1>Where you want to be</h1>
-    """
+
+    return render_template("home.html")
 
 def send_to_s3(file, bucket_name, acl="public-read"):
     """
     Docs: http://boto3.readthedocs.io/en/latest/guide/s3.html
-    TODO: change "test2" to be uniquely dynamically generated easy way uuid
     """
+
+    file_name = f"{uuid()}.jpeg"
+
     try:
         s3.upload_fileobj(
             file,
             bucket_name,
-            "test2",
+            file_name,
         )
     except Exception as e:
         print("Something Happened: ", e)
         return e
-    return f"{S3_LOCATION}{file.filename}"
-
+    return f"{S3_LOCATION}{file_name}"
 
 
 
@@ -83,17 +82,10 @@ def upload_image():
                                photo_url=str(output))
             db.session.add(image)
             db.session.commit()
+            flash("Image uploaded")
             return redirect("/")
 
-    return """
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=user_file>
-      <input type=submit value=Upload>
-    </form>
-    """
+    return render_template("upload.html")
 
 
 ####################################
