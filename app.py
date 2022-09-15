@@ -5,7 +5,7 @@ from PIL import Image
 import boto3
 import botocore
 from models import db, connect_db
-from models import Image as ImageTable
+from models import Image as Image_Table
 from uuid import uuid4 as uuid
 
 #TODO: Make template HTML for Home, Upload, Image Gallery
@@ -52,14 +52,23 @@ def send_to_s3(file, bucket_name, acl="public-read"):
             file,
             bucket_name,
             file_name,
+            ExtraArgs = {
+                "ContentType": "image/jpeg"
+            }
         )
     except Exception as e:
         print("Something Happened: ", e)
         return e
     return f"{S3_LOCATION}{file_name}"
-
-
-
+    
+@app.get("/images")
+def show_all_images():
+    """Show all images in AWS."""
+    photo_urls = db.session.query(Image_Table.photo_url).all()
+    
+    return render_template("image_gallery.html", photo_urls = photo_urls)
+    
+    
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload_image():
@@ -78,7 +87,7 @@ def upload_image():
         if file:
             file.filename = secure_filename(file.filename)
             output = send_to_s3(file, app.config["S3_BUCKET"])
-            image = ImageTable(version=1,
+            image = Image_Table(version=1,
                                photo_url=str(output))
             db.session.add(image)
             db.session.commit()
@@ -95,9 +104,6 @@ def upload_image():
 #     """Edit an image stored in db"""
 
 
-# @app.get("/images")
-# def show_all_images():
-#     """Show all images in AWS."""
 
 # @app.get("/search")
 # def search_images():

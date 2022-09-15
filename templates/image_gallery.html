@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %} Images {% endblock %}
+
+{% block content %}
+
+{% for url in photo_urls %}
+  <img src={{ url[0] }} alt="image">
+{% endfor %}
+
+{% endblock %}
