@@ -4,6 +4,8 @@ from werkzeug.utils import secure_filename
 from PIL import Image
 import boto3
 import botocore
+from models import db, connect_db
+from models import Image as ImageDB
 
 app = Flask(__name__)
 
@@ -85,13 +87,12 @@ def upload_image():
 # def edit_image():
 #     """Edit an image stored in db"""
 
-# @app.get("/")
-# def homepage():
-#     """Show homepage."""
 
-# @app.get("/images")
-# def show_all_images():
-#     """Show all images in AWS."""
+
+@app.get("/images")
+def show_all_images():
+    """Show all images in AWS."""
+
 
 # @app.get("/search")
 # def search_images():
