@@ -24,6 +24,8 @@ class Image(db.Model):
                    autoincrement=True)
     photo_url = db.Column(db.Text,
                           nullable=False)
+    #exif = db.relationship('ExifData', backref='image')
+
 
 
 class Versions(db.Model):

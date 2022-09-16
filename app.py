@@ -8,6 +8,7 @@ from models import db, connect_db
 from models import Image as Image_Table
 from helpers import send_to_s3, unpack_exif_data, upload_exif_data
 import pdb
+import copy
 
 
 #TODO: EXIF relational db and search if able; ask about EXIF data wanted
@@ -45,12 +46,12 @@ def show_all_images():
     return render_template("image_gallery.html", photo_urls = photo_urls)
 
 
-@app.get("/images/<int:image_id>")
-def show_image(image_id):
-    """Show an image from AWS."""
-    photo_url = Image.query.get_or_404(image_id)
+# @app.get("/images/<int:image_id>")
+# def show_image(image_id):
+#     """Show an image from AWS."""
+#     image = Image.query.get_or_404(image_id)
 
-    return render_template("image_editing.html", photo_url = photo_url)
+#     return render_template("image_editing.html", image = image)
 
 
 @app.route("/upload", methods=["GET", "POST"])
@@ -68,9 +69,10 @@ def upload_image():
             return "Please select a file"
 
         if file:
-            # breakpoint()
             exif_data = unpack_exif_data(file)
-            output = send_to_s3(file, app.config["S3_BUCKET"], S3_LOCATION)
+            file.seek(0)
+            output = send_to_s3(file, app.config["S3_BUCKET"])
+           
             image = Image_Table(photo_url=str(output))
             db.session.add(image)
             db.session.commit()

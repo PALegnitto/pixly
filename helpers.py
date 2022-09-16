@@ -17,7 +17,7 @@ s3 = boto3.client(
     aws_secret_access_key=AWS_SECRET_KEY,
 )
 
-def send_to_s3(file, bucket_name, s3_loc):
+def send_to_s3(file, bucket_name):
     """
     Docs: http://boto3.readthedocs.io/en/latest/guide/s3.html
     """
@@ -37,7 +37,7 @@ def send_to_s3(file, bucket_name, s3_loc):
         print("Something Happened: ", e)
         return e
 
-    return f"{s3_loc}{file_name}"
+    return f"{S3_LOCATION}{file_name}"
 
 def unpack_exif_data(picture):
     """ unpacks the exif data when user uploads image"""
