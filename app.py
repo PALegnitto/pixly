@@ -35,15 +35,21 @@ def homepage():
     return render_template("home.html")
 
 
-    
 @app.get("/images")
 def show_all_images():
     """Show all images in AWS."""
     photo_urls = db.session.query(Image_Table.photo_url).all()
-    
+
     return render_template("image_gallery.html", photo_urls = photo_urls)
-    
-    
+
+
+@app.get("/images/<int:image_id>")
+def show_image(image_id):
+    """Show an image from AWS."""
+    photo_url = Image.query.get_or_404(image_id)
+
+    return render_template("image_editing.html", photo_url = photo_url)
+
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload_image():
@@ -65,11 +71,11 @@ def upload_image():
             image = Image_Table(photo_url=str(output))
             db.session.add(image)
             db.session.commit()
-            
+
             db.session.refresh(image)
             print("the image id is:", image.id)
             upload_exif_data(photo_id=image.id, exif = exif_data)
-            
+
             flash("Image uploaded")
             return redirect("/")
 

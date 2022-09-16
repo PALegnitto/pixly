@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %} Image Editing {% endblock %}
+
+{% block content %}
+
+<img src={{photo_url}} alt="image">
+
+
+{% for tag in tags %}
+ {{TODO: get exif data listed here}}
+{% endfor %}
+
+{% endblock %}
