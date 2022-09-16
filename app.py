@@ -6,10 +6,8 @@ import boto3
 import botocore
 from models import db, connect_db
 from models import Image as Image_Table
-from uuid import uuid4 as uuid
+from helpers import send_to_s3, unpack_exif_data, upload_exif_data
 
-#TODO: Make template HTML for Home, Upload, Image Gallery
-#TODO: Organize code nicely
 #TODO: EXIF relational db and search if able; ask about EXIF data wanted
 
 app = Flask(__name__)
@@ -28,11 +26,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 connect_db(app)
 db.create_all()
 
-s3 = boto3.client(
-    's3',
-    aws_access_key_id=AWS_ACCESS_KEY,
-    aws_secret_access_key=AWS_SECRET_KEY,
-)
+
 
 @app.get("/")
 def homepage():
@@ -40,26 +34,7 @@ def homepage():
 
     return render_template("home.html")
 
-def send_to_s3(file, bucket_name, acl="public-read"):
-    """
-    Docs: http://boto3.readthedocs.io/en/latest/guide/s3.html
-    """
 
-    file_name = f"{uuid()}.jpeg"
-
-    try:
-        s3.upload_fileobj(
-            file,
-            bucket_name,
-            file_name,
-            ExtraArgs = {
-                "ContentType": "image/jpeg"
-            }
-        )
-    except Exception as e:
-        print("Something Happened: ", e)
-        return e
-    return f"{S3_LOCATION}{file_name}"
     
 @app.get("/images")
 def show_all_images():
@@ -85,12 +60,16 @@ def upload_image():
             return "Please select a file"
 
         if file:
-            file.filename = secure_filename(file.filename)
-            output = send_to_s3(file, app.config["S3_BUCKET"])
-            image = Image_Table(version=1,
-                               photo_url=str(output))
+            exif_data = unpack_exif_data(file)
+            output = send_to_s3(file, app.config["S3_BUCKET"], S3_LOCATION)
+            image = Image_Table(photo_url=str(output))
             db.session.add(image)
             db.session.commit()
+            
+            db.session.refresh(image)
+            print("the image id is:", image.id)
+            upload_exif_data(photo_id=image.id, exif = exif_data)
+            
             flash("Image uploaded")
             return redirect("/")
 

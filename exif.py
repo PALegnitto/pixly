@@ -5,7 +5,12 @@ import codecs
 
 
 img = Image.open("Canon_40D.jpeg")
+
+print("THIS IS IMAGE:",img)
+
 exif_data = img._getexif()
+
+print("THIS IS RAW EXIF DATA:",exif_data)
 
 exif = {
     ExifTags.TAGS[k]: v
@@ -13,11 +18,8 @@ exif = {
     if k in ExifTags.TAGS
 }
 
-binary_bulshit = exif['UserComment']
-
-hold_my_beer = codecs.decode(binary_bulshit)
-
-print(bool(hold_my_beer))
+for tag in exif:
+    print("THIS IS FORMATTED EXIF DATA",tag,":", exif[tag], type(exif[tag]))
 
 # decoded_bulshit = codecs.decode(binary_bulshit)
 

@@ -14,26 +14,39 @@ def connect_db(app):
     db.app = app
     db.init_app(app)
 
+
 class Image(db.Model):
 
     __tablename__ = "images"
 
     id = db.Column(db.Integer,
-                    primary_key = True,
-                    autoincrement = True)
-    version = db.Column(db.Integer,
-                    primary_key = True,
-                    nullable = False)
+                   primary_key=True,
+                   autoincrement=True)
     photo_url = db.Column(db.Text,
-                    nullable = False)
+                          nullable=False)
+
+
+class Versions(db.Model):
+
+    __tablename__ = "versions"
+
+    photo_id = db.Column(db.Integer,
+                         primary_key=True)
+    original_id = db.Column(db.Integer,
+                            foreign_key=True,
+                            primary_key=True)
+    version = db.Column(db.Integer,
+                        nullable=False)
+
 
 class ExifData(db.Model):
 
     __tablename__ = "exifdata"
 
-    tag = db.Column(db.Text,
-                    primary_key = True)
     photo_id = db.Column(db.Integer,
-                    foreign_key = True)
+                         primary_key=True,
+                         foreign_key=True)
+    tag = db.Column(db.Text,
+                    primary_key=True)
     value = db.Column(db.Text,
-                    nullable = False)
+                      nullable=False)
