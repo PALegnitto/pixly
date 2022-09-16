@@ -7,6 +7,8 @@ import botocore
 from models import db, connect_db
 from models import Image as Image_Table
 from helpers import send_to_s3, unpack_exif_data, upload_exif_data
+import pdb
+
 
 #TODO: EXIF relational db and search if able; ask about EXIF data wanted
 
@@ -66,6 +68,7 @@ def upload_image():
             return "Please select a file"
 
         if file:
+            # breakpoint()
             exif_data = unpack_exif_data(file)
             output = send_to_s3(file, app.config["S3_BUCKET"], S3_LOCATION)
             image = Image_Table(photo_url=str(output))
