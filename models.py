@@ -24,8 +24,7 @@ class Image(db.Model):
                    autoincrement=True)
     photo_url = db.Column(db.Text,
                           nullable=False)
-    #exif = db.relationship('ExifData', backref='image')
-
+    #exif = db.relationship('ExifData')
 
 
 class Versions(db.Model):
@@ -46,9 +45,10 @@ class ExifData(db.Model):
     __tablename__ = "exifdata"
 
     photo_id = db.Column(db.Integer,
-                         primary_key=True,
-                         foreign_key=True)
+                         db.ForeignKey('images.id'),
+                         primary_key=True,)
     tag = db.Column(db.Text,
                     primary_key=True)
     value = db.Column(db.Text,
                       nullable=False)
+    #image = db.relationship('Images')

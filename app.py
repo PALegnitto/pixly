@@ -46,12 +46,12 @@ def show_all_images():
     return render_template("image_gallery.html", photo_urls = photo_urls)
 
 
-# @app.get("/images/<int:image_id>")
-# def show_image(image_id):
-#     """Show an image from AWS."""
-#     image = Image.query.get_or_404(image_id)
+@app.get("/images/<int:image_id>")
+def show_image(image_id):
+    """Show an image from AWS."""
+    image = Image.query.get_or_404(image_id)
 
-#     return render_template("image_editing.html", image = image)
+    return render_template("image_editing.html", image = image)
 
 
 @app.route("/upload", methods=["GET", "POST"])
